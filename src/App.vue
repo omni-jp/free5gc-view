@@ -49,7 +49,11 @@ const title = computed(() => {
    return name.value ? data.nodes[name.value].name : ""
 })
 
-const nodeSelected = (node) => {
+const params = computed(() => {
+   return name.value ? data.nodes[name.value] : {}
+})
+
+const nodeSelected = (node: string) => {
     name.value = node
 }
 </script>
@@ -66,7 +70,7 @@ const nodeSelected = (node) => {
     />
     <div>
       <h2>{{ title }}</h2>
-      <div v-for="(v,k) in nodes[name]" :key="k">
+      <div v-for="(v,k) in params" :key="k">
         {{ k }} : {{ v }}
       </div>
     </div>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { Nodes, Edges, Layouts, Configs, EventHandlers } from "v-network-graph"
+import { Nodes, Edges, Layouts, UserConfigs, EventHandlers } from "v-network-graph"
 
 interface Props {
   nodes: Nodes,
   edges: Edges,
   layouts: Layouts,
-  configs: Configs,
+  configs: UserConfigs,
 }
 
 interface Emits {
