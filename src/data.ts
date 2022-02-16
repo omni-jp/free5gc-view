@@ -1,4 +1,4 @@
-import { Nodes, Edges, Layouts } from "v-network-graph"
+import { Nodes, Edges, Layouts, defineConfigs, GridLayout } from "v-network-graph"
 
 const nodes: Nodes = {
   ue: { name: "UE" },
@@ -59,8 +59,48 @@ const layouts: Layouts = {
   },
 }
 
+const configs = defineConfigs({
+  view: {
+    layoutHandler: new GridLayout({ grid: 20 }),
+    fit: false,
+  },
+  node: {
+    selectable: true,
+    normal: {
+      type: "rect",
+      width: 48,
+      height: 32,
+      borderRadius: 8,
+      color: "#ff6f00",
+    },
+    hover: {
+      color: "#ff5500",
+      width: 64,
+      height: 36,
+      borderRadius: 8,
+    },
+    label: {
+      fontSize: 16,
+      color: "#000000",
+      direction: "north",
+    },
+  },
+  edge: {
+    normal: {
+      width: 2,
+      color: "#ff6f00",
+      dasharray: "4 6",
+      linecap: "round",
+    },
+    hover: {
+      color: "#ff5500",
+    },
+  },
+})
+
 export default {
   nodes,
   edges,
   layouts,
+  configs,
 }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
-import * as vNG from "v-network-graph"
+import NetworkDiagram from "./components/NetworkDiagram.vue"
 import data from "./data"
 
 const nodes = {
@@ -49,76 +49,27 @@ const title = computed(() => {
    return name.value ? data.nodes[name.value].name : ""
 })
 
-const configs = vNG.defineConfigs({
-  view: {
-    layoutHandler: new vNG.GridLayout({ grid: 20 }),
-    fit: false,
-  },
-  node: {
-    selectable: true,
-    normal: {
-      type: "rect",
-      width: 48,
-      height: 32,
-      borderRadius: 8,
-      color: "#ff6f00",
-    },
-    hover: {
-      color: "#ff5500",
-      width: 64,
-      height: 36,
-      borderRadius: 8,
-    },
-    label: {
-      fontSize: 16,
-      color: "#000000",
-      direction: "north",
-    },
-  },
-  edge: {
-    normal: {
-      width: 2,
-      color: "#ff6f00",
-      dasharray: "4 6",
-      linecap: "round",
-    },
-    hover: {
-      color: "#ff5500",
-    },
-  },
-})
-
-const eventHandlers: vNG.EventHandlers = {
-  "node:click": ({ node }) => {
+const nodeSelected = (node) => {
     name.value = node
-  },
 }
 </script>
 
 <template>
   <div class="container">
-  <v-network-graph
-    :nodes="data.nodes"
-    :edges="data.edges"
-    :layouts="data.layouts"
-    :configs="configs"
-    :event-handlers="eventHandlers"
-    class="graph"
-  >
-    <template #edge-label="{ edge, ...slotProps }">
-      <v-edge-label
-        :text="edge.label"
-        align="center"
-        vertical-align="above"
-        v-bind="slotProps" />
-    </template>
-  </v-network-graph>
-  <div>
-    <h2>{{ title }}</h2>
-    <div v-for="(v,k) in nodes[name]" :key="k">
-      {{ k }} : {{ v }}
+    <network-diagram
+      :nodes="data.nodes"
+      :edges="data.edges"
+      :layouts="data.layouts"
+      :configs="data.configs"
+      @selected="nodeSelected"
+      class="diagram"
+    />
+    <div>
+      <h2>{{ title }}</h2>
+      <div v-for="(v,k) in nodes[name]" :key="k">
+        {{ k }} : {{ v }}
+      </div>
     </div>
-  </div>
   </div>
 </template>
 
@@ -126,7 +77,7 @@ const eventHandlers: vNG.EventHandlers = {
 .container {
   display: flex;
 }
-.graph {
+.diagram {
   width: 60vw;
   height: 80vh;
 }
