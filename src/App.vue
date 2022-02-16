@@ -52,6 +52,9 @@ const yamls: {[key: string]: {[key: string]: string}} = {
     sbi: "127.0.0.7",
     file: "pcfcfg.yaml",
   },
+  webconsole: {
+    file: "webuicfg.yaml",
+  },
 }
 
 const name = ref("")
@@ -66,6 +69,7 @@ const fetchConfig = async (name: string) => {
     }
     params.value = await rsp.json()
   } catch (err) {
+    params.value = {}
   }
 }
 
@@ -81,6 +85,8 @@ const nodeSelected = (node: string) => {
   name.value = node
   if (node !== "") {
     fetchConfig(node)
+  } else {
+    params.value = {}
   }
 }
 </script>
