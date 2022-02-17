@@ -31,12 +31,26 @@ const eventHandlers: EventHandlers = {
     :configs="configs"
     :event-handlers="eventHandlers"
   >
-    <template #edge-label="{ edge, ...slotProps }">
+    <template #edge-label="{ edge, scale, ...slotProps }">
       <v-edge-label
         :text="edge.label"
         align="center"
         vertical-align="above"
         v-bind="slotProps" />
+      <v-edge-label
+        :text="edge.sourceIp"
+        align="source"
+        vertical-align="above"
+        v-bind="slotProps"
+        fill="#ff5500"
+        :font-size="10 * scale" />
+      <v-edge-label
+        :text="edge.targetIp"
+        align="target"
+        vertical-align="below"
+        v-bind="slotProps"
+        fill="#ff5500"
+        :font-size="10 * scale" />
     </template>
   </v-network-graph>
 </template>
