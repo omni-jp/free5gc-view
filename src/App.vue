@@ -8,16 +8,11 @@ const params = ref({})
 const status = ref("")
 
 const updateIp = (node: string) => {
-  const params = data.nodes[node].params
-  if (!params) {
-    return
-  }
-  const cfg = params.configuration
+  const cfg = data.nodes[node].params?.configuration
   if (!cfg) {
     return
   }
-  const ip = (cfg.sbi) ? cfg.sbi.registerIPv4 : ""
-  console.log(`${node} ${ip}`)
+  const ip = cfg?.sbi?.registerIPv4
   switch (node) {
   case "amf":
     if (cfg.ngapIpList) {
@@ -28,9 +23,7 @@ const updateIp = (node: string) => {
     break
   case "smf":
     data.edges.n11.targetIp = ip
-    if (cfg.pfcp && cfg.pfcp.addr) {
-      data.edges.n4.sourceIp = cfg.pfcp.addr
-    }
+    data.edges.n4.sourceIp = cfg?.pfcp?.addr
     break
   case "upf":
     if (cfg.gtpu) {
@@ -79,38 +72,26 @@ const fetchConfig = async (name: string) => {
   }
 }
 
-const getNrfUri = (params) => {
-  if (!params) {
-    return ["", "", ""]
-  }
-  if (!params.configuration) {
-    return ["", "", ""]
-  }
-  const sbi = params.configuration.sbi
+const getNrfUri = (params: any) => {
+  const sbi = params?.configuration?.sbi
   if (!sbi) {
     return ["", "", ""]
   }
-  const host = sbi.registerIPv4
-  const port = sbi.port
-  const scheme = sbi.scheme
-  return [scheme, host, port]
+  const {scheme, registerIPv4, port} = sbi
+  return [scheme, registerIPv4, port]
 }
 
 const title = computed(() => {
   return name.value ? data.nodes[name.value].name : ""
 })
 
-const verifyNrfUri = (params, scheme, host, port) => {
-  if (!params || !params.configuration) {
+const verifyNrfUri = (params: any, scheme: string, host: string, port: string) => {
+  const uri = params?.configuration?.nrfUri
+  if (!uri) {
     return false
   }
-  const uri = params.configuration.nrfUri
-  console.log(uri)
   const [gotScheme, r] = uri.split("://")
   const [gotHost, gotPort] = r.split(":")
-  console.log(`${gotScheme} ${scheme}`)
-  console.log(`${gotHost} ${host}`)
-  console.log(`${gotPort} ${port}`)
   if (gotScheme != scheme) {
     return false
   }
