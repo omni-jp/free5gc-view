@@ -5,7 +5,7 @@ import data from "./data"
 
 const name = ref("")
 const params = ref({})
-const status = ref("")
+const errors = ref([])
 
 const updateIp = (node: string) => {
   const cfg = data.nodes[node].params?.configuration
@@ -85,29 +85,36 @@ const title = computed(() => {
   return name.value ? data.nodes[name.value].name : ""
 })
 
-const verifyNrfUri = (params: any, scheme: string, host: string, port: string) => {
+const verifyNrfUri = (node: string, scheme: string, ip: string, port: string) => {
+  const params = data.nodes[node].params
   const uri = params?.configuration?.nrfUri
   if (!uri) {
-    return false
+    return
   }
   const [gotScheme, r] = uri.split("://")
-  const [gotHost, gotPort] = r.split(":")
+  const [gotIp, gotPort] = r.split(":")
   if (gotScheme != scheme) {
-    return false
+    errors.value.push(`${node}: unexpected nrfUri scheme: want ${scheme}; but got ${gotScheme}`)
   }
-  if (gotHost != host) {
-    return false
+  if (gotIp != ip) {
+    errors.value.push(`${node}: unexpected nrfUri ip: want ${ip}; but got ${gotIp}`)
   }
   if (gotPort != port) {
-    return false
+    errors.value.push(`${node}: unexpected nrfUri port: want ${port}; but got ${port}`)
   }
-  return true
+  console.log(`${node} OK`)
 }
 
 const verifyConfigs = () => {
+  errors.value = []
   const [scheme, host, port] = getNrfUri(data.nodes.nrf.params)
-  const r = verifyNrfUri(data.nodes.amf.params, scheme, host, port)
-  status.value = (r) ? "OK" : "NG"
+  verifyNrfUri("amf", scheme, host, port)
+  verifyNrfUri("smf", scheme, host, port)
+  verifyNrfUri("ausf", scheme, host, port)
+  verifyNrfUri("nssf", scheme, host, port)
+  verifyNrfUri("pcf", scheme, host, port)
+  verifyNrfUri("udm", scheme, host, port)
+  verifyNrfUri("udr", scheme, host, port)
 }
 
 const nodeSelected = (node: string) => {
@@ -129,7 +136,12 @@ onMounted(() => {
 <template>
   <div class="status">
     <button @click="verifyConfigs">verify</button>
-    {{ status }}
+    <ul v-if="errors.length > 0">
+      <li v-for="error in errors" :key="error" class="error">{{ error }}</li>
+    </ul>
+    <div v-else>
+      OK
+    </div>
   </div>
   <div class="container">
     <network-diagram
@@ -158,5 +170,8 @@ onMounted(() => {
 .params {
   max-width: 40vw;
   white-space: pre-wrap;
+}
+.error {
+  color: #ff3333;
 }
 </style>

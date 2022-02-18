@@ -43,11 +43,11 @@ const edges: Edges = {
 const layouts: Layouts = {
   nodes: {
     ue: { x: 0, y: 400 },
-    ran: { x: 80, y: 400 },
-    dn: { x: 400, y: 400 },
-    amf: { x: 160, y: 320 },
-    smf: { x: 240, y: 320 },
-    upf: { x: 160, y: 400 },
+    ran: { x:160, y: 400 },
+    dn: { x: 480, y: 400 },
+    amf: { x: 240, y: 320 },
+    smf: { x: 400, y: 320 },
+    upf: { x: 320, y: 400 },
     nrf: { x: 480, y: 80 },
     pcf: { x: 400, y: 160 },
     ausf: { x: 240, y: 160 },
