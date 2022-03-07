@@ -134,15 +134,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="status">
-    <button @click="verifyConfigs">verify</button>
-    <ul v-if="errors.length > 0">
-      <li v-for="error in errors" :key="error" class="error">{{ error }}</li>
-    </ul>
-    <div v-else>
-      OK
-    </div>
-  </div>
   <div class="container">
     <network-diagram
       :nodes="data.nodes"
@@ -152,24 +143,44 @@ onMounted(() => {
       @selected="nodeSelected"
       class="diagram"
     />
-    <div>
+    <div class="sub">
       <h2>{{ title }}</h2>
       <pre class="params">{{ params }}</pre>
+    </div>
+    <div class="status">
+      <button @click="verifyConfigs">verify</button>
+      <ul v-if="errors.length > 0">
+        <li v-for="error in errors" :key="error" class="error">{{ error }}</li>
+      </ul>
+      <div v-else>
+        OK
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .container {
-  display: flex;
+  display: grid;
+  grid-gap: 5px;
+  grid-template-rows: 60vh auto;
+  grid-template-columns: 60vw calc(40vw - 20px);
+  grid-template-areas:
+    "diagram sub"
+    "status sub";
 }
 .diagram {
-  width: 60vw;
-  height: 80vh;
+  grid-area: diagram;
+}
+.sub {
+  grid-area: sub;
 }
 .params {
-  max-width: 40vw;
+  overflow-x: scroll;
   white-space: pre-wrap;
+}
+.status {
+  grid-area: status;
 }
 .error {
   color: #ff3333;
